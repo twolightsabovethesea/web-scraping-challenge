@@ -10,6 +10,8 @@ def scrape():
     import os
     from splinter import Browser
     from webdriver_manager.chrome import ChromeDriverManager
+    import pymongo
+    from flask import Flask, render_template, redirect
 
 
 
@@ -181,13 +183,14 @@ def scrape():
     hemisphere_image_urls
 
     mars_dictionary = {}
-    mars_dictionary['news title'] = news_title
-    mars_dictionary['news paragraph'] = news_p
-    mars_dictionary['mars image'] = image_url
-    mars_dictionary['mars facts table'] = html_table
-    mars_dictionary['hemisphere images'] = hemisphere_image_urls
+    mars_dictionary['news_title'] = news_title
+    mars_dictionary['news_paragraph'] = news_p
+    mars_dictionary['mars_image'] = image_url
+    mars_dictionary['mars_facts_table'] = html_table
+    mars_dictionary['hemisphere_images'] = hemisphere_image_urls
 
-    return(mars_dictionary)
+    return mars_dictionary
+
 
 
 

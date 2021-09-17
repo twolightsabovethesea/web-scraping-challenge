@@ -1,8 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 
 # import pymongo and scrape_mars
+# from flask_pymongo import PyMongo
+
 import pymongo
+
 import scrape_mars
+
+from bson.json_util import dumps
 
 # Create an instance of our Flask app.
 app = Flask(__name__)
@@ -16,41 +21,33 @@ client = pymongo.MongoClient(conn)
 # Connect to a database. Will create one if not already available.
 db = client.mars_db
 
-# Drops collection if available to remove duplicates
-db.mars.drop()
-
- #create route that renders index.html template
-@app.route("/")
-def index():
-    player_dictionary = {"player_1": "Jessica",
-                         "player_2": "Mark"}
-    return render_template("index.html", dict=player_dictionary)
 
 
-# Creates a collection in the database and inserts two documents
-db.mars.insert_many(
-    [
-        {
-            'player': 'Jessica',
-            'position': 'Point Guard'
-        },
-        {
-            'player': 'Mark',
-            'position': 'Center'
-        }
-    ]
-)
 
 
 # Set route
 @app.route('/')
 def index():
-    # Store the entire team collection in a list
-    teams = list(db.team.find())
-    print(teams)
+    
+    # Return the template with the mars data passed in
+    
+
+    return render_template('index.html', mars=db.mars)
+# Set route
+@app.route('/scrape')
+def scrape():
+    # Drops collection if available to remove duplicates
+    db.mars.drop()
+
+    post = scrape_mars.scrape()
+
+    db.mars.insert_one(post)
+
 
     # Return the template with the teams list passed in
-    return render_template('index.html', teams=teams)
+    return redirect("/")
+
+
 
 
 if __name__ == "__main__":
